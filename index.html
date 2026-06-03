@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Mini-Test TKI — Manager</title>
+<style>
+:root{--p:#5B2C6F;--s:#8E44AD;--a:#D2B4DE;--bg:#FAFAFA;--tx:#1A1A1A;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:'Inter','Helvetica Neue',sans-serif;background:#E8E0F0;color:var(--tx);min-height:100vh;display:flex;justify-content:center;padding:20px;}
+.app{width:100%;max-width:660px;}
+.hdr{background:var(--p);color:#fff;border-radius:12px;padding:16px 20px;margin-bottom:20px;}
+.hdr .mod{font-size:9px;opacity:.7;text-transform:uppercase;letter-spacing:1.5px;}
+.hdr h1{font-size:19px;font-weight:800;margin-top:4px;line-height:1.2;}
+.hdr .sub{font-size:11px;opacity:.85;margin-top:4px;}
+.progress-info{display:flex;justify-content:space-between;font-size:12px;color:var(--p);font-weight:600;margin-bottom:5px;}
+.bar-bg{height:7px;background:var(--a);border-radius:4px;margin-bottom:18px;}
+.bar-fill{height:100%;background:var(--s);border-radius:4px;transition:width .3s;}
+.card{background:#fff;border-radius:12px;padding:22px;box-shadow:0 2px 14px rgba(91,44,111,.1);margin-bottom:16px;}
+.q-tag{font-size:11px;color:var(--s);font-weight:700;margin-bottom:7px;}
+.q-txt{font-size:15px;font-weight:600;line-height:1.55;margin-bottom:18px;}
+.opt{padding:11px 15px;border-radius:8px;border:2px solid #EAE0F2;background:#fff;cursor:pointer;font-size:13px;line-height:1.5;margin-bottom:9px;transition:all .15s;color:var(--tx);width:100%;text-align:left;}
+.opt:hover{border-color:var(--a);background:#FAF5FF;}
+.opt.sel{border-color:var(--p);background:#F3E5F5;}
+.btn{width:100%;padding:14px;background:var(--p);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s;font-family:inherit;}
+.btn:disabled{background:#C9B8D8;cursor:not-allowed;}
+.btn.sec{background:#fff;color:var(--p);border:2px solid var(--p);}
+.btn-row{display:flex;gap:12px;margin-bottom:8px;}
+.res-section{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 14px rgba(91,44,111,.1);margin-bottom:16px;}
+.res-title{font-weight:700;color:var(--p);font-size:14px;margin-bottom:14px;}
+.score-bar{margin-bottom:10px;}
+.score-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px;}
+.score-name{font-weight:600;}
+.score-val{color:var(--s);font-weight:700;}
+.bar2-bg{height:9px;background:#F0E8F8;border-radius:5px;}
+.bar2-fill{height:100%;border-radius:5px;transition:width .6s;}
+.ranking{margin-top:14px;font-size:12px;color:#555;line-height:2.2;}
+.interp-box{background:#F3E5F5;border:2px solid var(--p);border-radius:12px;padding:18px;margin-bottom:16px;}
+.interp-title{font-weight:800;color:var(--p);font-size:15px;margin-bottom:12px;}
+.interp-row{margin-bottom:9px;font-size:13.5px;line-height:1.65;}
+.falc-box{background:#FFFBEA;border:2px solid #F0C040;border-radius:12px;padding:16px;margin-bottom:16px;}
+.falc-title{font-weight:700;margin-bottom:9px;font-size:14px;}
+.falc-box p{font-size:13px;line-height:2.1;}
+.footer{border-top:1px solid var(--a);margin-top:8px;padding-top:12px;text-align:center;font-size:9px;color:#999;}
+svg.radar{display:block;margin:0 auto;}
+@media print{
+  body{background:#fff;padding:0;}.app{max-width:100%;}
+  .btn,.btn-row{display:none!important;}
+  .hdr,.interp-box{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+}
+@media(max-width:500px){.hdr h1{font-size:16px;}.q-txt{font-size:14px;}.opt{font-size:12px;}}
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+<script>
+const P="#5B2C6F",S="#8E44AD",A="#D2B4DE";
+const STYLES=["S'IMPOSER","CÉDER","ÉVITER","COMPROMIS","COLLABORER"];
+const ICONS=["🦁","🐻","🐢","🤝","🧠"];
+
+const QS=[
+  {
+    tag:"Q1 — Désaccord en réunion d'équipe",
+    txt:"En réunion, deux membres de ton équipe s'affrontent sur la méthode à adopter pour un projet important. Le ton monte. Tu animes la réunion.",
+    opts:[
+      "Tu coupes court : \"C'est moi qui décide de la méthode. On avance.\"",
+      "Tu laisses chacun s'exprimer jusqu'au bout sans intervenir, même si ça déborde.",
+      "Tu changes de sujet et tu remets ce point à une prochaine réunion.",
+      "Tu proposes de tester les deux méthodes en parallèle sur une semaine et d'arbitrer selon les résultats.",
+      "Tu suspends le débat, tu poses les deux visions au tableau et tu demandes au groupe d'évaluer ensemble les avantages de chacune."
+    ]
+  },
+  {
+    tag:"Q2 — Collaborateur qui sous-performe depuis 3 semaines",
+    txt:"Un membre de ton équipe habituellement fiable est en dessous de ses objectifs depuis 3 semaines. Les autres commencent à le remarquer.",
+    opts:[
+      "Tu le convoques et tu lui fixes un ultimatum clair avec une date limite pour redresser la barre.",
+      "Tu ne dis rien et tu espères que la situation se régule d'elle-même.",
+      "Tu redistribues discrètement une partie de sa charge sans aborder le sujet directement.",
+      "Tu lui proposes un plan de rattrapage sur 2 semaines avec des points d'étape.",
+      "Tu organises un entretien individuel pour comprendre ce qui se passe — perso ou pro — avant toute décision."
+    ]
+  },
+  {
+    tag:"Q3 — Conflit entre deux collaborateurs",
+    txt:"Deux membres de ton équipe ne se parlent plus. La tension est palpable et commence à affecter le reste du groupe.",
+    opts:[
+      "Tu les réunis tous les deux et tu poses les règles : \"Vous êtes professionnels, vous travaillez ensemble, point.\"",
+      "Tu laisses le temps arranger les choses sans intervenir.",
+      "Tu évites d'aborder le sujet pour ne pas envenimer la situation.",
+      "Tu réorganises les missions pour limiter leurs interactions jusqu'à ce que ça se calme.",
+      "Tu reçois chacun séparément pour comprendre la source du conflit, puis tu organises une mise au point à 3 si les deux y sont prêts."
+    ]
+  },
+  {
+    tag:"Q4 — Ton N+1 te fixe un objectif que tu juges irréaliste",
+    txt:"Ton manager te fixe un objectif trimestriel que tu estimes inatteignable avec les ressources actuelles. Il attend ta validation.",
+    opts:[
+      "Tu refuses de valider : \"Je ne peux pas m'engager sur des chiffres que je sais intenables.\"",
+      "Tu valides sans mot dire pour ne pas créer de tension avec ta hiérarchie.",
+      "Tu demandes un délai de réflexion et tu repousses la réponse.",
+      "Tu proposes un objectif intermédiaire plus réaliste avec une clause de révision à mi-parcours.",
+      "Tu demandes une réunion pour présenter les données concrètes et chercher ensemble les leviers manquants."
+    ]
+  },
+  {
+    tag:"Q5 — Un collaborateur conteste ta décision devant l'équipe",
+    txt:"Tu annonces une décision en réunion. Un collaborateur la conteste publiquement, devant tout le groupe, avec un ton assertif.",
+    opts:[
+      "Tu recadres immédiatement : \"La décision est prise. Les remarques se font en entretien individuel, pas en réunion.\"",
+      "Tu te justifies longuement pour convaincre, même si tu perds le fil de la réunion.",
+      "Tu passes à autre chose en faisant semblant de ne pas avoir entendu.",
+      "Tu proposes de prendre en compte sa remarque et d'ajuster un point mineur de la décision.",
+      "Tu accueilles la remarque, tu demandes au groupe s'il partage cette préoccupation, et tu décides ensuite de maintenir ou d'ajuster."
+    ]
+  },
+  {
+    tag:"Q6 — Tension autour de la répartition des tâches",
+    txt:"Plusieurs membres de ton équipe estiment que la charge de travail est inégalement répartie. La frustration est exprimée lors d'un entretien informel.",
+    opts:[
+      "Tu expliques que la répartition est basée sur les compétences et qu'elle ne changera pas.",
+      "Tu rassures sans agir : \"Je prends note, on verra à la prochaine réorg.\"",
+      "Tu évites d'aborder le sujet en équipe pour ne pas créer un débat incontrôlable.",
+      "Tu rééquilibres rapidement quelques missions pour calmer la tension immédiate.",
+      "Tu organises un atelier de cartographie des charges avec l'équipe pour objectiver la situation et co-construire une répartition plus équitable."
+    ]
+  },
+  {
+    tag:"Q7 — Collaborateur en désaccord avec une nouvelle procédure",
+    txt:"Une nouvelle procédure vient d'être imposée par le siège. Un collaborateur expérimenté t'explique en tête-à-tête qu'elle est contre-productive. Il a des arguments solides.",
+    opts:[
+      "Tu lui rappelles que la procédure vient du siège et qu'elle s'applique sans discussion.",
+      "Tu lui dis que tu vas \"faire remonter\" sans réellement agir.",
+      "Tu évites le sujet pour ne pas te retrouver entre deux feux.",
+      "Tu proposes de tester la procédure 1 mois et de faire un bilan chiffré ensuite.",
+      "Tu prends le temps d'analyser ses arguments, tu les documentes, et tu fais une remontée formelle et argumentée au siège."
+    ]
+  },
+  {
+    tag:"Q8 — Collaborateur qui dépasse régulièrement le cadre de son rôle",
+    txt:"Un collaborateur compétent prend régulièrement des décisions qui ne relèvent pas de son périmètre. Certains collègues commencent à se plaindre.",
+    opts:[
+      "Tu le recadres clairement : \"Ton rôle s'arrête là. Les décisions hors périmètre, c'est moi.\"",
+      "Tu laisses faire car ses décisions sont souvent bonnes et ça t'arrange.",
+      "Tu n'abordes pas le sujet pour ne pas démotiver quelqu'un d'impliqué.",
+      "Tu redéfinis son périmètre à la marge pour lui donner un peu plus de légitimité.",
+      "Tu organises un entretien pour clarifier ensemble les zones de responsabilité et explorer si une évolution de poste est pertinente."
+    ]
+  },
+  {
+    tag:"Q9 — Désaccord avec un pair manager sur un dossier transversal",
+    txt:"Tu travailles sur un projet transversal avec un manager d'une autre équipe. Vous n'êtes pas d'accord sur les priorités et aucun de vous deux n'a autorité sur l'autre.",
+    opts:[
+      "Tu maintiends ta position fermement : ton équipe appliquera tes priorités, point.",
+      "Tu cèdes sur l'essentiel pour préserver la relation et avancer.",
+      "Tu repousses les arbitrages en attendant qu'un tiers tranche.",
+      "Tu proposes un découpage du projet où chacun pilote sa partie selon ses priorités.",
+      "Tu proposes une session de travail commune pour aligner les priorités sur la base des objectifs partagés, pas des positions de chacun."
+    ]
+  },
+  {
+    tag:"Q10 — Ambiance dégradée dans l'équipe depuis plusieurs semaines",
+    txt:"L'ambiance dans ton équipe s'est progressivement dégradée. Les échanges sont secs, la créativité est en berne, et l'absentéisme a légèrement augmenté. Personne ne dit rien ouvertement.",
+    opts:[
+      "Tu réunis l'équipe et tu poses le sujet directement : \"Quelque chose ne va pas. Je veux qu'on en parle maintenant.\"",
+      "Tu attends que ça passe : toutes les équipes ont des hauts et des bas.",
+      "Tu évites d'aborder le sujet pour ne pas créer une crise là où il n'y en a peut-être pas.",
+      "Tu organises un événement d'équipe pour recréer du lien et espères que ça suffise.",
+      "Tu mènes des entretiens individuels discrets, tu identifies les causes sous-jacentes, et tu construis un plan d'action avec les personnes concernées."
+    ]
+  }
+];
+
+const INTERP=[
+  {
+    titre:"🦁 Tu es un Manager Directif",
+    apport:"Tu tranches vite, tu assumes les décisions difficiles, tu donnes un cap clair. Dans les situations de crise ou d'urgence, c'est une force réelle.",
+    risque:"Utilisé en permanence, ce style étouffe l'autonomie de l'équipe. Tes collaborateurs finissent par attendre ta validation pour tout — et n'osent plus prendre d'initiative.",
+    dev:"🧠 COLLABORER : implique davantage ton équipe dans les décisions qui les concernent. Tu gagneras en adhésion ce que tu perdras en vitesse."
+  },
+  {
+    titre:"🐻 Tu es un Manager Apaisant",
+    apport:"Tu préserves les relations, tu crées un climat de confiance et de bienveillance. Ton équipe se sent en sécurité pour s'exprimer.",
+    risque:"Tu absorbes les problèmes sans les résoudre. Les conflits non traités s'accumulent silencieusement — et ressortent amplifiés.",
+    dev:"🦁 S'IMPOSER sur les sujets qui le méritent : poser un cadre clair est un acte de respect, pas d'autorité."
+  },
+  {
+    titre:"🐢 Tu es un Manager Attentiste",
+    apport:"Tu évites les escalades inutiles. Tu laisses du temps aux situations de se décanter — et parfois ça suffit.",
+    risque:"L'attentisme prolongé est perçu comme une absence de leadership. Les problèmes que tu n'adresses pas grossissent et finissent par te rattraper.",
+    dev:"🤝 COMPROMIS : une solution partielle et rapide vaut mieux que l'inaction. Tu n'as pas à tout résoudre parfaitement pour avancer."
+  },
+  {
+    titre:"🤝 Tu es un Manager Négociateur",
+    apport:"Tu trouves rapidement des solutions acceptables, tu débloques les situations, tu maintiens la dynamique collective. Précieux dans les contextes sous tension.",
+    risque:"Les compromis répétés ne traitent jamais les causes profondes. Les mêmes problèmes reviennent au prochain point de tension.",
+    dev:"🧠 COLLABORER sur les sujets récurrents : prends le temps d'aller à la racine, même si c'est plus long. Ça évite la boucle."
+  },
+  {
+    titre:"🧠 Tu es un Manager Intégrateur",
+    apport:"Tu traites les causes profondes, tu renforces la cohésion, tu construis des solutions durables et partagées. Ton équipe se sent réellement impliquée.",
+    risque:"Tu mobilises du temps et de l'énergie que tu n'as pas toujours. Dans l'urgence ou face à une résistance forte, la collaboration peut paralyser.",
+    dev:"🦁 S'IMPOSER dans les situations d'urgence ou de recadrage : décider seul et vite est aussi une compétence managériale. Toutes les situations ne se co-construisent pas."
+  }
+];
+
+let cur=0,answers={},sel=null;
+
+function render(){
+  document.getElementById("app").innerHTML=cur<QS.length?renderQ():renderResults();
+}
+
+function renderQ(){
+  const q=QS[cur],pct=Math.round(cur/QS.length*100);
+  return`<div class="hdr">
+    <div class="mod">Formation Managériale — Version Universelle</div>
+    <h1>⚔️ MINI-TEST TKI — Mon style face aux conflits</h1>
+    <div class="sub">Module "Le Manager face aux conflits" — 23 MindSet</div>
+  </div>
+  <div class="progress-info"><span>Question ${cur+1} / ${QS.length}</span><span>${pct}% complété</span></div>
+  <div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div>
+  <div class="card">
+    <div class="q-tag">${q.tag}</div>
+    <div class="q-txt">${q.txt}</div>
+    ${q.opts.map((o,i)=>`<button class="opt${sel===i?' sel':''}" onclick="choose(${i})">${o}</button>`).join('')}
+  </div>
+  <button class="btn"${sel===null?' disabled':''} onclick="next()">${cur<QS.length-1?'Question suivante →':'Voir mes résultats 🎯'}</button>
+  <div class="footer">LE MANAGER FACE AUX CONFLITS — Module Formasuite ADF_2026420<br/>© 2026 — 23 MindSet / ATBA Fares — Tous droits réservés</div>`;
+}
+
+function renderResults(){
+  const scores=STYLES.map((_,i)=>Object.values(answers).filter(v=>v===i).length);
+  const sorted=[...scores.map((s,i)=>({s,i}))].sort((a,b)=>b.s-a.s);
+  const domI=sorted[0].i;
+  const ip=INTERP[domI];
+  const bars=sorted.map(({s,i})=>`<div class="score-bar">
+    <div class="score-row"><span class="score-name">${ICONS[i]} ${STYLES[i]}</span><span class="score-val">${s}/10</span></div>
+    <div class="bar2-bg"><div class="bar2-fill" style="width:${s*10}%;background:${i===domI?P:A}"></div></div>
+  </div>`).join('');
+
+  return`<div class="hdr">
+    <div class="mod">Tes résultats</div>
+    <h1>🎯 Profil TKI — ${ip.titre}</h1>
+    <div class="sub">Module "Le Manager face aux conflits" — 23 MindSet</div>
+  </div>
+  <div class="res-section">
+    <div class="res-title">📊 Ton graphique de styles</div>
+    ${buildRadar(scores)}
+  </div>
+  <div class="res-section">
+    <div class="res-title">📈 Scores détaillés</div>
+    ${bars}
+    <div class="ranking">
+      🥇 <strong>Dominant :</strong> ${ICONS[sorted[0].i]} ${STYLES[sorted[0].i]} &nbsp;|&nbsp;
+      🥈 <strong>Secondaire :</strong> ${ICONS[sorted[1].i]} ${STYLES[sorted[1].i]} &nbsp;|&nbsp;
+      ⬇️ <strong>Moins utilisé :</strong> ${ICONS[sorted[4].i]} ${STYLES[sorted[4].i]}
+    </div>
+  </div>
+  <div class="interp-box">
+    <div class="interp-title">${ip.titre}</div>
+    <div class="interp-row">✅ <strong>Ce que tu apportes :</strong> ${ip.apport}</div>
+    <div class="interp-row">⚠️ <strong>Le risque :</strong> ${ip.risque}</div>
+    <div class="interp-row">👉 <strong>À développer en priorité :</strong> ${ip.dev}</div>
+  </div>
+  <div class="falc-box">
+    <div class="falc-title">💬 EN MOTS SIMPLES</div>
+    <p>👉 Tu as un style principal pour gérer les conflits.</p>
+    <p>✅ Ce style a des forces. Il fonctionne dans certaines situations.</p>
+    <p>⚠️ Utilisé tout le temps, il peut poser problème.</p>
+    <p>👉 L'objectif : choisir le bon style selon la situation.</p>
+  </div>
+  <div class="btn-row">
+    <button class="btn" onclick="window.print()">🖨️ Imprimer mes résultats</button>
+    <button class="btn sec" onclick="reset()">🔄 Refaire le test</button>
+  </div>
+  <div class="footer">LE MANAGER FACE AUX CONFLITS — Module Formasuite ADF_2026420<br/>© 2026 — 23 MindSet / ATBA Fares — Tous droits réservés</div>`;
+}
+
+function buildRadar(scores){
+  const W=280,H=260,cx=W/2,cy=H/2,R=95,n=5,step=2*Math.PI/n;
+  const pts=r=>Array.from({length:n},(_,i)=>{const a=i*step-Math.PI/2;return[cx+r*Math.cos(a),cy+r*Math.sin(a)];});
+  const rings=[2,4,6,8,10].map(v=>{const p=pts(R*v/10).map(([x,y])=>x+","+y).join(" ");return`<polygon points="${p}" fill="none" stroke="${A}" stroke-width="1"/>`;}).join('');
+  const axes=Array.from({length:n},(_,i)=>{const[x,y]=pts(R)[i],[lx,ly]=pts(R+20)[i];return`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="${A}" stroke-width="1"/><text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" font-size="10" font-weight="700" fill="${P}">${ICONS[i]} ${STYLES[i]}</text>`;}).join('');
+  const dp=scores.map((s,i)=>{const[x,y]=pts(R*s/10)[i];return x+","+y;}).join(" ");
+  const dots=scores.map((s,i)=>{const[x,y]=pts(R*s/10)[i];return`<circle cx="${x}" cy="${y}" r="4" fill="${P}"/>`;}).join('');
+  return`<svg class="radar" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${rings}${axes}<polygon points="${dp}" fill="${S}" fill-opacity="0.35" stroke="${P}" stroke-width="2"/>${dots}</svg>`;
+}
+
+function choose(i){sel=i;render();}
+function next(){if(sel===null)return;answers[cur]=sel;sel=null;cur++;render();}
+function reset(){cur=0;answers={};sel=null;render();}
+
+render();
+</script>
+</body>
+</html>
