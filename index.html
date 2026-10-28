@@ -3,64 +3,87 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Mini-Test TKI — Manager</title>
+<title>Test TKI - Manager</title>
 <style>
-:root{--p:#5B2C6F;--s:#8E44AD;--a:#D2B4DE;--bg:#FAFAFA;--tx:#1A1A1A;}
+:root{--p:#5B2C6F;--hdr:#5B2C6F;--s:#8E44AD;--a:#D2B4DE;--lo:#D2B4DE;--pt:#5B2C6F;--tx:#1A1A1A;--pg:#E8E0F0;--card:#fff;--ob:#EAE0F2;--hov:#FAF5FF;--sel:#F3E5F5;--dis:#C9B8D8;--track:#F0E8F8;--mut:#555;--fb:#FFFBEA;--fbd:#F0C040;--shadow:rgba(91,44,111,.1);color-scheme:light;}
+:root[data-theme="dark"]{--p:#7B3F94;--hdr:#4A2360;--s:#B07CCB;--a:#4B3A5A;--lo:#6B5880;--pt:#D9B8EA;--tx:#F2EAF7;--pg:#150E1C;--card:#241A2F;--ob:#3E2F4D;--hov:#2E2239;--sel:#3A2749;--dis:#3E3348;--track:#392B47;--mut:#BBAFC6;--fb:#33290F;--fbd:#A8861F;--shadow:rgba(0,0,0,.4);color-scheme:dark;}
+.theme-btn{position:fixed;top:10px;right:10px;z-index:10;background:var(--card);color:var(--pt);border:2px solid var(--p);border-radius:20px;padding:6px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:inherit;}
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-body{font-family:'Inter','Helvetica Neue',sans-serif;background:#E8E0F0;color:var(--tx);min-height:100vh;display:flex;justify-content:center;padding:20px;}
+body{font-family:'Inter','Helvetica Neue',sans-serif;background:var(--pg);color:var(--tx);min-height:100vh;display:flex;justify-content:center;padding:56px 20px 20px;}
 .app{width:100%;max-width:660px;}
-.hdr{background:var(--p);color:#fff;border-radius:12px;padding:16px 20px;margin-bottom:20px;}
+.hdr{background:var(--hdr);color:#fff;border-radius:12px;padding:16px 20px;margin-bottom:20px;}
 .hdr .mod{font-size:9px;opacity:.7;text-transform:uppercase;letter-spacing:1.5px;}
 .hdr h1{font-size:19px;font-weight:800;margin-top:4px;line-height:1.2;}
 .hdr .sub{font-size:11px;opacity:.85;margin-top:4px;}
-.progress-info{display:flex;justify-content:space-between;font-size:12px;color:var(--p);font-weight:600;margin-bottom:5px;}
+.progress-info{display:flex;justify-content:space-between;font-size:12px;color:var(--pt);font-weight:600;margin-bottom:5px;}
 .bar-bg{height:7px;background:var(--a);border-radius:4px;margin-bottom:18px;}
 .bar-fill{height:100%;background:var(--s);border-radius:4px;transition:width .3s;}
-.card{background:#fff;border-radius:12px;padding:22px;box-shadow:0 2px 14px rgba(91,44,111,.1);margin-bottom:16px;}
+.card{background:var(--card);border-radius:12px;padding:22px;box-shadow:0 2px 14px var(--shadow);margin-bottom:16px;}
 .q-tag{font-size:11px;color:var(--s);font-weight:700;margin-bottom:7px;}
 .q-txt{font-size:15px;font-weight:600;line-height:1.55;margin-bottom:18px;}
-.opt{padding:11px 15px;border-radius:8px;border:2px solid #EAE0F2;background:#fff;cursor:pointer;font-size:13px;line-height:1.5;margin-bottom:9px;transition:all .15s;color:var(--tx);width:100%;text-align:left;}
-.opt:hover{border-color:var(--a);background:#FAF5FF;}
-.opt.sel{border-color:var(--p);background:#F3E5F5;}
+.opt{padding:11px 15px;border-radius:8px;border:2px solid var(--ob);background:var(--card);cursor:pointer;font-size:13px;line-height:1.5;margin-bottom:9px;transition:all .15s;color:var(--tx);width:100%;text-align:left;}
+.opt:hover{border-color:var(--s);background:var(--hov);}
+.opt.sel{border-color:var(--pt);background:var(--sel);}
 .btn{width:100%;padding:14px;background:var(--p);color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;transition:background .2s;font-family:inherit;}
-.btn:disabled{background:#C9B8D8;cursor:not-allowed;}
-.btn.sec{background:#fff;color:var(--p);border:2px solid var(--p);}
+.btn:disabled{background:var(--dis);cursor:not-allowed;}
+.btn.sec{background:var(--card);color:var(--pt);border:2px solid var(--pt);}
 .btn-row{display:flex;gap:12px;margin-bottom:8px;}
-.res-section{background:#fff;border-radius:12px;padding:20px;box-shadow:0 2px 14px rgba(91,44,111,.1);margin-bottom:16px;}
-.res-title{font-weight:700;color:var(--p);font-size:14px;margin-bottom:14px;}
+.res-section{background:var(--card);border-radius:12px;padding:20px;box-shadow:0 2px 14px var(--shadow);margin-bottom:16px;}
+.res-title{font-weight:700;color:var(--pt);font-size:14px;margin-bottom:14px;}
 .score-bar{margin-bottom:10px;}
 .score-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:3px;}
 .score-name{font-weight:600;}
 .score-val{color:var(--s);font-weight:700;}
-.bar2-bg{height:9px;background:#F0E8F8;border-radius:5px;}
+.bar2-bg{height:9px;background:var(--track);border-radius:5px;}
 .bar2-fill{height:100%;border-radius:5px;transition:width .6s;}
-.ranking{margin-top:14px;font-size:12px;color:#555;line-height:2.2;}
-.interp-box{background:#F3E5F5;border:2px solid var(--p);border-radius:12px;padding:18px;margin-bottom:16px;}
-.interp-title{font-weight:800;color:var(--p);font-size:15px;margin-bottom:12px;}
+.ranking{margin-top:14px;font-size:12px;color:var(--mut);line-height:2.2;}
+.interp-box{background:var(--sel);border:2px solid var(--p);border-radius:12px;padding:18px;margin-bottom:16px;}
+.interp-title{font-weight:800;color:var(--pt);font-size:15px;margin-bottom:12px;}
 .interp-row{margin-bottom:9px;font-size:13.5px;line-height:1.65;}
-.falc-box{background:#FFFBEA;border:2px solid #F0C040;border-radius:12px;padding:16px;margin-bottom:16px;}
+.falc-box{background:var(--fb);border:2px solid var(--fbd);border-radius:12px;padding:16px;margin-bottom:16px;}
 .falc-title{font-weight:700;margin-bottom:9px;font-size:14px;}
 .falc-box p{font-size:13px;line-height:2.1;}
-.footer{border-top:1px solid var(--a);margin-top:8px;padding-top:12px;text-align:center;font-size:9px;color:#999;}
+.footer{border-top:1px solid var(--a);margin-top:8px;padding-top:12px;text-align:center;font-size:9px;color:var(--mut);}
 svg.radar{display:block;margin:0 auto;}
 @media print{
   body{background:#fff;padding:0;}.app{max-width:100%;}
-  .btn,.btn-row{display:none!important;}
+  .btn,.btn-row,.theme-btn{display:none!important;}
+  :root[data-theme="dark"]{--p:#5B2C6F;--hdr:#5B2C6F;--s:#8E44AD;--a:#D2B4DE;--lo:#D2B4DE;--pt:#5B2C6F;--tx:#1A1A1A;--pg:#fff;--card:#fff;--sel:#F3E5F5;--track:#F0E8F8;--mut:#555;--fb:#FFFBEA;--fbd:#F0C040;}
   .hdr,.interp-box{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
 }
 @media(max-width:500px){.hdr h1{font-size:16px;}.q-txt{font-size:14px;}.opt{font-size:12px;}}
 </style>
 </head>
 <body>
+<button class="theme-btn" id="themeBtn" type="button" onclick="toggleTheme()"></button>
 <div class="app" id="app"></div>
 <script>
-const P="#5B2C6F",S="#8E44AD",A="#D2B4DE";
+let P,S,A,LO,PT;
+function readColors(){const cs=getComputedStyle(document.documentElement),g=n=>cs.getPropertyValue(n).trim();P=g('--p');S=g('--s');A=g('--a');LO=g('--lo');PT=g('--pt');}
+function applyTheme(th){
+  document.documentElement.setAttribute('data-theme',th);
+  const b=document.getElementById('themeBtn');
+  b.textContent=th==='dark'?'☀️ Affichage clair':'🌙 Affichage sombre';
+  b.setAttribute('aria-label',th==='dark'?'Passer en affichage clair':'Passer en affichage sombre');
+  readColors();
+}
+function toggleTheme(){
+  const th=document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+  try{localStorage.setItem('tki-theme',th);}catch(e){}
+  applyTheme(th);render();
+}
+(function(){
+  let th=null;
+  try{th=localStorage.getItem('tki-theme');}catch(e){}
+  if(th!=='dark'&&th!=='light')th=(window.matchMedia&&matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';
+  applyTheme(th);
+})();
 const STYLES=["S'IMPOSER","CÉDER","ÉVITER","COMPROMIS","COLLABORER"];
-const ICONS=["🦁","🐻","🐢","🤝","🧠"];
+const ICONS=["🦁","🧸","🐢","🦊","🦉"];
 
 const QS=[
   {
-    tag:"Q1 — Désaccord en réunion d'équipe",
+    tag:"Q1 - Désaccord en réunion d'équipe",
     txt:"En réunion, deux membres de ton équipe s'affrontent sur la méthode à adopter pour un projet important. Le ton monte. Tu animes la réunion.",
     opts:[
       "Tu coupes court : \"C'est moi qui décide de la méthode. On avance.\"",
@@ -71,18 +94,18 @@ const QS=[
     ]
   },
   {
-    tag:"Q2 — Collaborateur qui sous-performe depuis 3 semaines",
+    tag:"Q2 - Collaborateur qui sous-performe depuis 3 semaines",
     txt:"Un membre de ton équipe habituellement fiable est en dessous de ses objectifs depuis 3 semaines. Les autres commencent à le remarquer.",
     opts:[
       "Tu le convoques et tu lui fixes un ultimatum clair avec une date limite pour redresser la barre.",
       "Tu ne dis rien et tu espères que la situation se régule d'elle-même.",
       "Tu redistribues discrètement une partie de sa charge sans aborder le sujet directement.",
       "Tu lui proposes un plan de rattrapage sur 2 semaines avec des points d'étape.",
-      "Tu organises un entretien individuel pour comprendre ce qui se passe — perso ou pro — avant toute décision."
+      "Tu organises un entretien individuel pour comprendre ce qui se passe - perso ou pro - avant toute décision."
     ]
   },
   {
-    tag:"Q3 — Conflit entre deux collaborateurs",
+    tag:"Q3 - Conflit entre deux collaborateurs",
     txt:"Deux membres de ton équipe ne se parlent plus. La tension est palpable et commence à affecter le reste du groupe.",
     opts:[
       "Tu les réunis tous les deux et tu poses les règles : \"Vous êtes professionnels, vous travaillez ensemble, point.\"",
@@ -93,7 +116,7 @@ const QS=[
     ]
   },
   {
-    tag:"Q4 — Ton N+1 te fixe un objectif que tu juges irréaliste",
+    tag:"Q4 - Ton N+1 te fixe un objectif que tu juges irréaliste",
     txt:"Ton manager te fixe un objectif trimestriel que tu estimes inatteignable avec les ressources actuelles. Il attend ta validation.",
     opts:[
       "Tu refuses de valider : \"Je ne peux pas m'engager sur des chiffres que je sais intenables.\"",
@@ -104,7 +127,7 @@ const QS=[
     ]
   },
   {
-    tag:"Q5 — Un collaborateur conteste ta décision devant l'équipe",
+    tag:"Q5 - Un collaborateur conteste ta décision devant l'équipe",
     txt:"Tu annonces une décision en réunion. Un collaborateur la conteste publiquement, devant tout le groupe, avec un ton assertif.",
     opts:[
       "Tu recadres immédiatement : \"La décision est prise. Les remarques se font en entretien individuel, pas en réunion.\"",
@@ -115,7 +138,7 @@ const QS=[
     ]
   },
   {
-    tag:"Q6 — Tension autour de la répartition des tâches",
+    tag:"Q6 - Tension autour de la répartition des tâches",
     txt:"Plusieurs membres de ton équipe estiment que la charge de travail est inégalement répartie. La frustration est exprimée lors d'un entretien informel.",
     opts:[
       "Tu expliques que la répartition est basée sur les compétences et qu'elle ne changera pas.",
@@ -126,7 +149,7 @@ const QS=[
     ]
   },
   {
-    tag:"Q7 — Collaborateur en désaccord avec une nouvelle procédure",
+    tag:"Q7 - Collaborateur en désaccord avec une nouvelle procédure",
     txt:"Une nouvelle procédure vient d'être imposée par le siège. Un collaborateur expérimenté t'explique en tête-à-tête qu'elle est contre-productive. Il a des arguments solides.",
     opts:[
       "Tu lui rappelles que la procédure vient du siège et qu'elle s'applique sans discussion.",
@@ -137,7 +160,7 @@ const QS=[
     ]
   },
   {
-    tag:"Q8 — Collaborateur qui dépasse régulièrement le cadre de son rôle",
+    tag:"Q8 - Collaborateur qui dépasse régulièrement le cadre de son rôle",
     txt:"Un collaborateur compétent prend régulièrement des décisions qui ne relèvent pas de son périmètre. Certains collègues commencent à se plaindre.",
     opts:[
       "Tu le recadres clairement : \"Ton rôle s'arrête là. Les décisions hors périmètre, c'est moi.\"",
@@ -148,7 +171,7 @@ const QS=[
     ]
   },
   {
-    tag:"Q9 — Désaccord avec un pair manager sur un dossier transversal",
+    tag:"Q9 - Désaccord avec un pair manager sur un dossier transversal",
     txt:"Tu travailles sur un projet transversal avec un manager d'une autre équipe. Vous n'êtes pas d'accord sur les priorités et aucun de vous deux n'a autorité sur l'autre.",
     opts:[
       "Tu maintiends ta position fermement : ton équipe appliquera tes priorités, point.",
@@ -159,7 +182,7 @@ const QS=[
     ]
   },
   {
-    tag:"Q10 — Ambiance dégradée dans l'équipe depuis plusieurs semaines",
+    tag:"Q10 - Ambiance dégradée dans l'équipe depuis plusieurs semaines",
     txt:"L'ambiance dans ton équipe s'est progressivement dégradée. Les échanges sont secs, la créativité est en berne, et l'absentéisme a légèrement augmenté. Personne ne dit rien ouvertement.",
     opts:[
       "Tu réunis l'équipe et tu poses le sujet directement : \"Quelque chose ne va pas. Je veux qu'on en parle maintenant.\"",
@@ -175,77 +198,114 @@ const INTERP=[
   {
     titre:"🦁 Tu es un Manager Directif",
     apport:"Tu tranches vite, tu assumes les décisions difficiles, tu donnes un cap clair. Dans les situations de crise ou d'urgence, c'est une force réelle.",
-    risque:"Utilisé en permanence, ce style étouffe l'autonomie de l'équipe. Tes collaborateurs finissent par attendre ta validation pour tout — et n'osent plus prendre d'initiative.",
-    dev:"🧠 COLLABORER : implique davantage ton équipe dans les décisions qui les concernent. Tu gagneras en adhésion ce que tu perdras en vitesse."
+    risque:"Utilisé en permanence, ce style étouffe l'autonomie de l'équipe. Tes collaborateurs finissent par attendre ta validation pour tout - et n'osent plus prendre d'initiative.",
+    dev:"🦉 COLLABORER : implique davantage ton équipe dans les décisions qui les concernent. Tu gagneras en adhésion ce que tu perdras en vitesse."
   },
   {
-    titre:"🐻 Tu es un Manager Apaisant",
+    titre:"🧸 Tu es un Manager Apaisant",
     apport:"Tu préserves les relations, tu crées un climat de confiance et de bienveillance. Ton équipe se sent en sécurité pour s'exprimer.",
-    risque:"Tu absorbes les problèmes sans les résoudre. Les conflits non traités s'accumulent silencieusement — et ressortent amplifiés.",
+    risque:"Tu absorbes les problèmes sans les résoudre. Les conflits non traités s'accumulent silencieusement - et ressortent amplifiés.",
     dev:"🦁 S'IMPOSER sur les sujets qui le méritent : poser un cadre clair est un acte de respect, pas d'autorité."
   },
   {
     titre:"🐢 Tu es un Manager Attentiste",
-    apport:"Tu évites les escalades inutiles. Tu laisses du temps aux situations de se décanter — et parfois ça suffit.",
+    apport:"Tu évites les escalades inutiles. Tu laisses du temps aux situations de se décanter - et parfois ça suffit.",
     risque:"L'attentisme prolongé est perçu comme une absence de leadership. Les problèmes que tu n'adresses pas grossissent et finissent par te rattraper.",
-    dev:"🤝 COMPROMIS : une solution partielle et rapide vaut mieux que l'inaction. Tu n'as pas à tout résoudre parfaitement pour avancer."
+    dev:"🦊 COMPROMIS : une solution partielle et rapide vaut mieux que l'inaction. Tu n'as pas à tout résoudre parfaitement pour avancer."
   },
   {
-    titre:"🤝 Tu es un Manager Négociateur",
+    titre:"🦊 Tu es un Manager Négociateur",
     apport:"Tu trouves rapidement des solutions acceptables, tu débloques les situations, tu maintiens la dynamique collective. Précieux dans les contextes sous tension.",
     risque:"Les compromis répétés ne traitent jamais les causes profondes. Les mêmes problèmes reviennent au prochain point de tension.",
-    dev:"🧠 COLLABORER sur les sujets récurrents : prends le temps d'aller à la racine, même si c'est plus long. Ça évite la boucle."
+    dev:"🦉 COLLABORER sur les sujets récurrents : prends le temps d'aller à la racine, même si c'est plus long. Ça évite la boucle."
   },
   {
-    titre:"🧠 Tu es un Manager Intégrateur",
+    titre:"🦉 Tu es un Manager Intégrateur",
     apport:"Tu traites les causes profondes, tu renforces la cohésion, tu construis des solutions durables et partagées. Ton équipe se sent réellement impliquée.",
     risque:"Tu mobilises du temps et de l'énergie que tu n'as pas toujours. Dans l'urgence ou face à une résistance forte, la collaboration peut paralyser.",
     dev:"🦁 S'IMPOSER dans les situations d'urgence ou de recadrage : décider seul et vite est aussi une compétence managériale. Toutes les situations ne se co-construisent pas."
   }
 ];
 
-let cur=0,answers={},sel=null;
+const DEEP=[["Je laisse parfois aux autres la responsabilité de résoudre un problème.", "Plutôt que de négocier les choses sur lesquelles nous ne sommes pas d'accord, j'essaie de mettre en avant celles sur lesquelles nous sommes tous deux d'accord.", 2, 1], ["J'essaie de trouver un compromis.", "J'essaie de traiter toutes mes préoccupations et celles de l'autre.", 3, 4], ["J'ai l'habitude de poursuivre fermement mes objectifs.", "Il m'arrive d'essayer d'apaiser l'autre et de préserver notre relation.", 0, 1], ["J'essaie de trouver un compromis.", "Il m'arrive parfois de sacrifier mes propres désirs pour satisfaire ceux de l'autre partie.", 3, 1], ["Je recherche systématiquement l'aide de l'autre partie pour trouver une solution.", "J'essaie de faire le nécessaire pour éviter les tensions inutiles.", 4, 2], ["J'essaie d'éviter de me retrouver dans des situations désagréables.", "J'essaie de gagner ma position.", 2, 0], ["J'essaie de reporter le problème jusqu'à ce que j'aie eu assez de temps pour y penser.", "Je cède certains points contre d'autres.", 2, 3], ["J'ai l'habitude de poursuivre fermement mes objectifs.", "J'essaie de mettre immédiatement à plat tous les problèmes et conflits.", 0, 4], ["Je pense qu'il ne faut pas toujours avoir peur des différences.", "Je fais des efforts pour obtenir ce que je veux.", 2, 0], ["J'ai l'habitude de poursuivre fermement mes objectifs.", "J'essaie de trouver un compromis.", 0, 3], ["J'essaie de mettre immédiatement à plat tous les problèmes et conflits.", "Il m'arrive d'essayer d'apaiser l'autre et de préserver notre relation.", 4, 1], ["J'évite parfois de prendre des positions qui provoqueraient une polémique.", "J'accepterai de céder certaines positions aux autres s'ils me laissent certaines des miennes.", 2, 3], ["Je propose de trouver un terrain d'entente.", "J'insiste pour que mes demandes soient satisfaites.", 3, 0], ["J'explique mes idées à l'autre et je lui demande les siennes.", "J'essaie de lui montrer la logique et les avantages de mon point de vue.", 4, 0], ["Il m'arrive d'essayer d'apaiser l'autre et de préserver notre relation.", "J'essaie de faire le nécessaire pour éviter toute tension.", 1, 2], ["J'essaie de ne pas blesser l'autre.", "J'essaie de convaincre l'autre des mérites de mon point de vue.", 1, 0], ["J'ai l'habitude de poursuivre fermement mes objectifs.", "J'essaie de faire le nécessaire pour éviter les tensions inutiles.", 0, 2], ["Si cela peut lui faire plaisir, il m'arrive de laisser l'autre personne maintenir son point de vue.", "J'accepterai de céder certaines positions aux autres s'ils me laissent certaines des miennes.", 1, 3], ["J'essaie de mettre immédiatement à plat tous les problèmes et conflits.", "J'essaie de reporter le problème jusqu'à ce que j'aie eu assez de temps pour y penser.", 4, 2], ["J'essaie de régler immédiatement toutes nos différences.", "J'essaie de trouver une combinaison équitable de gains et de pertes pour tous les deux.", 4, 3], ["En début de négociation, j'essaie de tenir compte des sentiments de l'autre partie.", "Je penche toujours pour une discussion directe du problème.", 1, 4], ["J'essaie de trouver une position qui soit intermédiaire entre la mienne et celle de l'autre partie.", "Je fais valoir mes droits.", 3, 0], ["Je tiens souvent à satisfaire tous mes désirs.", "À certains moments, je laisse aux autres la responsabilité de résoudre les problèmes.", 4, 2], ["Si l'autre partie semble accorder de l'importance à sa position, je vais essayer de satisfaire sa demande.", "J'essaie de convaincre l'autre partie d'opter pour un compromis.", 1, 3], ["J'essaie de démontrer à l'autre partie la logique et les avantages de ma position.", "En début de négociation, j'essaie de tenir compte des sentiments de l'autre partie.", 0, 1], ["Je propose un terrain d'entente.", "Je tiens presque toujours à satisfaire tous mes désirs.", 3, 4], ["J'évite parfois d'adopter une position qui susciterait la polémique.", "Si cela peut lui faire plaisir, il m'arrive de laisser l'autre partie maintenir son point de vue.", 2, 1], ["J'ai l'habitude de poursuivre fermement mes objectifs.", "Je pense qu'il ne faut pas toujours avoir peur des différences.", 0, 4], ["Je propose un terrain d'entente.", "Je pense qu'il ne faut pas toujours avoir peur des différences.", 3, 2], ["J'essaie de ne pas blesser l'autre partie.", "Je partage toujours le problème avec l'autre personne afin que l'on trouve une solution.", 1, 4]];
+let mode=null,cur=0,answers={},sel=null;
+const NQ=()=>mode==="deep"?DEEP.length:QS.length;
+const MAXS=()=>mode==="deep"?12:10;
+const FOOT='<div class="footer">LE MANAGER FACE AUX CONFLITS<br/>© 2026 - 23 MindSet - Fares ATBA - Tous droits réservés</div>';
 
 function render(){
-  document.getElementById("app").innerHTML=cur<QS.length?renderQ():renderResults();
+  const a=document.getElementById("app");
+  a.innerHTML=mode===null?renderStart():(cur<NQ()?renderQ():renderResults());
+  window.scrollTo(0,0);
+}
+
+function renderStart(){
+  return`<div class="hdr">
+    <div class="mod">Formation Managériale</div>
+    <h1>⚔️ TEST TKI - Mon style face aux conflits</h1>
+    <div class="sub">Module "Le Manager face aux conflits" - 23 MindSet</div>
+  </div>
+  <div class="card">
+    <div class="q-tag">CHOISIS TON TEST</div>
+    <div class="q-txt">Cinq façons de réagir face à un conflit : 🦁 S'imposer, 🦉 Collaborer, 🦊 Compromis, 🐢 Éviter, 🧸 Céder. Lequel utilises-tu le plus ?</div>
+    <button class="opt" onclick="start('quick')"><strong>⚡ Test rapide</strong><br/>10 situations de management, 5 minutes environ. Résultat sur 10 pour chaque style.</button>
+    <button class="opt" onclick="start('deep')"><strong>🔍 Test approfondi</strong><br/>30 paires d'affirmations (60 phrases), 15 minutes environ. C'est le test du livret : le résultat est plus fin. Résultat sur 12 pour chaque style.</button>
+  </div>
+  <div class="falc-box">
+    <div class="falc-title">💬 EN MOTS SIMPLES</div>
+    <p>👉 Il n'y a pas de bonne ou de mauvaise réponse.</p>
+    <p>👉 Choisis ce que tu ferais vraiment, pas ce qui serait le mieux.</p>
+    <p>👉 Rien n'est enregistré.</p>
+  </div>
+  ${FOOT}`;
 }
 
 function renderQ(){
-  const q=QS[cur],pct=Math.round(cur/QS.length*100);
+  const deep=mode==="deep",n=NQ(),pct=Math.round(cur/n*100);
+  const q=deep?null:QS[cur];
+  const tag=deep?`Paire ${cur+1} / ${n}`:q.tag;
+  const txt=deep?"Dans une situation de désaccord, quelle affirmation te ressemble le plus ?":q.txt;
+  const opts=deep?[DEEP[cur][0],DEEP[cur][1]].map((t,i)=>`<strong>${i?"B":"A"}.</strong> ${t}`):q.opts;
   return`<div class="hdr">
-    <div class="mod">Formation Managériale — Version Universelle</div>
-    <h1>⚔️ MINI-TEST TKI — Mon style face aux conflits</h1>
-    <div class="sub">Module "Le Manager face aux conflits" — 23 MindSet</div>
+    <div class="mod">${deep?"Test approfondi":"Test rapide"}</div>
+    <h1>⚔️ TEST TKI - Mon style face aux conflits</h1>
+    <div class="sub">Module "Le Manager face aux conflits" - 23 MindSet</div>
   </div>
-  <div class="progress-info"><span>Question ${cur+1} / ${QS.length}</span><span>${pct}% complété</span></div>
+  <div class="progress-info"><span>${deep?"Paire":"Question"} ${cur+1} / ${n}</span><span>${pct}% complété</span></div>
   <div class="bar-bg"><div class="bar-fill" style="width:${pct}%"></div></div>
   <div class="card">
-    <div class="q-tag">${q.tag}</div>
-    <div class="q-txt">${q.txt}</div>
-    ${q.opts.map((o,i)=>`<button class="opt${sel===i?' sel':''}" onclick="choose(${i})">${o}</button>`).join('')}
+    <div class="q-tag">${tag}</div>
+    <div class="q-txt">${txt}</div>
+    ${opts.map((o,i)=>`<button class="opt${sel===i?' sel':''}" onclick="choose(${i})">${o}</button>`).join('')}
   </div>
-  <button class="btn"${sel===null?' disabled':''} onclick="next()">${cur<QS.length-1?'Question suivante →':'Voir mes résultats 🎯'}</button>
-  <div class="footer">LE MANAGER FACE AUX CONFLITS — Module Formasuite ADF_2026420<br/>© 2026 — 23 MindSet / ATBA Fares — Tous droits réservés</div>`;
+  <button class="btn"${sel===null?' disabled':''} onclick="next()">${cur<n-1?(deep?'Paire suivante →':'Question suivante →'):'Voir mes résultats 🎯'}</button>
+  ${FOOT}`;
+}
+
+function computeScores(){
+  if(mode==="deep"){const sc=[0,0,0,0,0];Object.keys(answers).forEach(k=>{sc[DEEP[k][2+answers[k]]]++;});return sc;}
+  return STYLES.map((_,i)=>Object.values(answers).filter(v=>v===i).length);
 }
 
 function renderResults(){
-  const scores=STYLES.map((_,i)=>Object.values(answers).filter(v=>v===i).length);
+  const deep=mode==="deep",MX=MAXS();
+  const scores=computeScores();
   const sorted=[...scores.map((s,i)=>({s,i}))].sort((a,b)=>b.s-a.s);
   const domI=sorted[0].i;
   const ip=INTERP[domI];
+  const tops=sorted.filter(x=>x.s===sorted[0].s),tie=tops.length>1;
   const bars=sorted.map(({s,i})=>`<div class="score-bar">
-    <div class="score-row"><span class="score-name">${ICONS[i]} ${STYLES[i]}</span><span class="score-val">${s}/10</span></div>
-    <div class="bar2-bg"><div class="bar2-fill" style="width:${s*10}%;background:${i===domI?P:A}"></div></div>
+    <div class="score-row"><span class="score-name">${ICONS[i]} ${STYLES[i]}</span><span class="score-val">${s}/${MX}</span></div>
+    <div class="bar2-bg"><div class="bar2-fill" style="width:${s/MX*100}%;background:${i===domI?PT:LO}"></div></div>
   </div>`).join('');
-
   return`<div class="hdr">
-    <div class="mod">Tes résultats</div>
-    <h1>🎯 Profil TKI — ${ip.titre}</h1>
-    <div class="sub">Module "Le Manager face aux conflits" — 23 MindSet</div>
+    <div class="mod">Tes résultats - ${deep?"test approfondi":"test rapide"}</div>
+    <h1>🎯 Profil TKI - ${ip.titre}</h1>
+    <div class="sub">Module "Le Manager face aux conflits" - 23 MindSet</div>
   </div>
   <div class="res-section">
     <div class="res-title">📊 Ton graphique de styles</div>
-    ${buildRadar(scores)}
+    ${buildRadar(scores,MX)}
   </div>
   <div class="res-section">
     <div class="res-title">📈 Scores détaillés</div>
@@ -254,6 +314,7 @@ function renderResults(){
       🥇 <strong>Dominant :</strong> ${ICONS[sorted[0].i]} ${STYLES[sorted[0].i]} &nbsp;|&nbsp;
       🥈 <strong>Secondaire :</strong> ${ICONS[sorted[1].i]} ${STYLES[sorted[1].i]} &nbsp;|&nbsp;
       ⬇️ <strong>Moins utilisé :</strong> ${ICONS[sorted[4].i]} ${STYLES[sorted[4].i]}
+      ${tie?`<br/>⚖️ <strong>Égalité :</strong> ${tops.map(x=>ICONS[x.i]+" "+STYLES[x.i]).join(", ")} sont à égalité en tête. Ce sont tes styles principaux.`:""}
     </div>
   </div>
   <div class="interp-box">
@@ -269,26 +330,28 @@ function renderResults(){
     <p>⚠️ Utilisé tout le temps, il peut poser problème.</p>
     <p>👉 L'objectif : choisir le bon style selon la situation.</p>
   </div>
+  ${deep?"":`<div class="btn-row"><button class="btn sec" onclick="start('deep')">🔍 Affiner avec le test approfondi (30 paires)</button></div>`}
   <div class="btn-row">
     <button class="btn" onclick="window.print()">🖨️ Imprimer mes résultats</button>
     <button class="btn sec" onclick="reset()">🔄 Refaire le test</button>
   </div>
-  <div class="footer">LE MANAGER FACE AUX CONFLITS — Module Formasuite ADF_2026420<br/>© 2026 — 23 MindSet / ATBA Fares — Tous droits réservés</div>`;
+  ${FOOT}`;
 }
 
-function buildRadar(scores){
+function buildRadar(scores,MX){
   const W=280,H=260,cx=W/2,cy=H/2,R=95,n=5,step=2*Math.PI/n;
   const pts=r=>Array.from({length:n},(_,i)=>{const a=i*step-Math.PI/2;return[cx+r*Math.cos(a),cy+r*Math.sin(a)];});
-  const rings=[2,4,6,8,10].map(v=>{const p=pts(R*v/10).map(([x,y])=>x+","+y).join(" ");return`<polygon points="${p}" fill="none" stroke="${A}" stroke-width="1"/>`;}).join('');
-  const axes=Array.from({length:n},(_,i)=>{const[x,y]=pts(R)[i],[lx,ly]=pts(R+20)[i];return`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="${A}" stroke-width="1"/><text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" font-size="10" font-weight="700" fill="${P}">${ICONS[i]} ${STYLES[i]}</text>`;}).join('');
-  const dp=scores.map((s,i)=>{const[x,y]=pts(R*s/10)[i];return x+","+y;}).join(" ");
-  const dots=scores.map((s,i)=>{const[x,y]=pts(R*s/10)[i];return`<circle cx="${x}" cy="${y}" r="4" fill="${P}"/>`;}).join('');
-  return`<svg class="radar" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${rings}${axes}<polygon points="${dp}" fill="${S}" fill-opacity="0.35" stroke="${P}" stroke-width="2"/>${dots}</svg>`;
+  const rings=[0.2,0.4,0.6,0.8,1].map(f=>{const p=pts(R*f).map(([x,y])=>x+","+y).join(" ");return`<polygon points="${p}" fill="none" stroke="${A}" stroke-width="1"/>`;}).join('');
+  const axes=Array.from({length:n},(_,i)=>{const[x,y]=pts(R)[i],[lx,ly]=pts(R+20)[i];return`<line x1="${cx}" y1="${cy}" x2="${x}" y2="${y}" stroke="${A}" stroke-width="1"/><text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="middle" font-size="10" font-weight="700" fill="${PT}">${ICONS[i]} ${STYLES[i]}</text>`;}).join('');
+  const dp=scores.map((s,i)=>{const[x,y]=pts(R*s/MX)[i];return x+","+y;}).join(" ");
+  const dots=scores.map((s,i)=>{const[x,y]=pts(R*s/MX)[i];return`<circle cx="${x}" cy="${y}" r="4" fill="${PT}"/>`;}).join('');
+  return`<svg class="radar" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}">${rings}${axes}<polygon points="${dp}" fill="${S}" fill-opacity="0.35" stroke="${PT}" stroke-width="2"/>${dots}</svg>`;
 }
 
+function start(m){mode=m;cur=0;answers={};sel=null;render();}
 function choose(i){sel=i;render();}
 function next(){if(sel===null)return;answers[cur]=sel;sel=null;cur++;render();}
-function reset(){cur=0;answers={};sel=null;render();}
+function reset(){mode=null;cur=0;answers={};sel=null;render();}
 
 render();
 </script>
